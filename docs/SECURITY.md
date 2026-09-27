@@ -40,6 +40,13 @@ Matter, scope and exclusion strings are serialised as untrusted JSON data. The f
 
 A routing book cannot be modified after sealing. Route receipts therefore remain bound to the exact definitions that were evaluated.
 
+The sealed `constitution_hash` makes that binding explicit, including resolver
+addresses while keeping them out of semantic classification. Route receipts
+also carry `matter_hash`, the complete ordered `verdict_hash`, and a final
+`receipt_hash`. Consumers can use `is_route_receipt` and
+`single_resolver_for` to reject a receipt whose constitution or matter does not
+match the expected values.
+
 ### Consumer treats multi-scope as single
 
 `single_resolver(route_id)` reverts unless the route status is exactly `SINGLE`.

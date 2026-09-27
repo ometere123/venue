@@ -4,6 +4,7 @@
 from genlayer import *
 
 import json
+import hashlib
 import typing
 from dataclasses import dataclass
 
@@ -36,6 +37,7 @@ MAX_EXCLUSIONS_LEN = 700
 MAX_MATTER_LEN = 1800
 MIN_VENUES = 2
 MAX_VENUES = 8
+PROVENANCE_VERSION = "VENUE-PROVENANCE-V1"
 
 ERR_EXPECTED = "EXPECTED"
 ERR_STATE = "STATE"
@@ -52,6 +54,7 @@ class RoutingBook:
     sealed_at: str
     route_count: u32
     venue_ids: DynArray[u256]
+    constitution_hash: str
 
 
 @allow_storage
@@ -78,6 +81,10 @@ class RouteReceipt:
     single_venue_id: u256
     matched_venue_ids: DynArray[u256]
     ambiguous_venue_ids: DynArray[u256]
+    constitution_hash: str
+    matter_hash: str
+    verdict_hash: str
+    receipt_hash: str
 
 
 @gl.contract_interface
@@ -90,6 +97,19 @@ class IVenue:
         def is_single_route(self, route_id: u256) -> bool: ...
         def is_matched_venue(self, route_id: u256, venue_id: u256) -> bool: ...
         def single_resolver(self, route_id: u256) -> Address: ...
+        def is_route_receipt(
+            self,
+            route_id: u256,
+            expected_constitution_hash: str,
+            expected_matter_hash: str,
+            expected_receipt_hash: str,
+        ) -> bool: ...
+        def single_resolver_for(
+            self,
+            route_id: u256,
+            expected_constitution_hash: str,
+            expected_matter_hash: str,
+        ) -> Address: ...
         def runtime_chain_id(self) -> u256: ...
 
     class Write:
@@ -153,6 +173,88 @@ def validate_text(name: str, value: str, maximum: int, allow_empty: bool = False
     if not allow_empty and cleaned == "":
         raise gl.vm.UserError(f"{ERR_EXPECTED}: {name} is required")
     return cleaned
+
+
+def canonical_json(value: typing.Any) -> str:
+    return json.dumps(
+        value,
+        sort_keys=True,
+        ensure_ascii=True,
+        separators=(",", ":"),
+    )
+
+
+def sha256_hex(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def constitution_payload(book_id: u256, book: RoutingBook, venues: list[VenueDefinition]) -> dict:
+    ordered_venues = []
+    for venue_id, venue in zip(book.venue_ids, venues):
+        ordered_venues.append(
+            {
+                "venue_id": int(venue_id),
+                "name": str(venue.name),
+                "scope": str(venue.scope),
+                "exclusions": str(venue.exclusions),
+                "resolver": str(venue.resolver).lower(),
+            }
+        )
+    return {
+        "version": PROVENANCE_VERSION,
+        "book_id": int(book_id),
+        "creator": str(book.creator).lower(),
+        "title": str(book.title),
+        "venues": ordered_venues,
+    }
+
+
+def compute_constitution_hash(book_id: u256, book: RoutingBook, venues: list[VenueDefinition]) -> str:
+    return sha256_hex(canonical_json(constitution_payload(book_id, book, venues)))
+
+
+def compute_verdict_hash(
+    constitution_hash: str,
+    venue_ids: list[u256],
+    verdicts: list[str],
+) -> str:
+    return sha256_hex(
+        canonical_json(
+            {
+                "version": PROVENANCE_VERSION,
+                "constitution_hash": constitution_hash,
+                "venue_ids": [int(value) for value in venue_ids],
+                "verdicts": verdicts,
+            }
+        )
+    )
+
+
+def compute_receipt_hash(
+    book_id: u256,
+    constitution_hash: str,
+    matter_hash: str,
+    verdict_hash: str,
+    status: int,
+    single_venue_id: u256,
+    matched_venue_ids: list[u256],
+    ambiguous_venue_ids: list[u256],
+) -> str:
+    return sha256_hex(
+        canonical_json(
+            {
+                "version": PROVENANCE_VERSION,
+                "book_id": int(book_id),
+                "constitution_hash": constitution_hash,
+                "matter_hash": matter_hash,
+                "verdict_hash": verdict_hash,
+                "status": int(status),
+                "single_venue_id": int(single_venue_id),
+                "matched_venue_ids": [int(value) for value in matched_venue_ids],
+                "ambiguous_venue_ids": [int(value) for value in ambiguous_venue_ids],
+            }
+        )
+    )
 
 
 def parse_json_object(raw: typing.Any) -> dict:
@@ -311,6 +413,12 @@ class Venue(gl.Contract):
             )
         return payloads
 
+    def _book_venues(self, book: RoutingBook) -> list[VenueDefinition]:
+        venues: list[VenueDefinition] = []
+        for venue_id in book.venue_ids:
+            venues.append(self._require_venue(venue_id))
+        return venues
+
     def _verify_routing(self, matter: str, venue_payloads: list[dict]) -> dict:
         def leader_fn() -> dict:
             return classify_once(matter, venue_payloads)
@@ -388,6 +496,7 @@ class Venue(gl.Contract):
         book.created_at = current_datetime()
         book.sealed_at = ""
         book.route_count = u32(0)
+        book.constitution_hash = ""
 
         BookCreated(book_id, gl.message.sender_address, title=title).emit()
         return book_id
@@ -452,6 +561,11 @@ class Venue(gl.Contract):
                 f"{ERR_EXPECTED}: routing book requires at least {MIN_VENUES} venues"
             )
 
+        book.constitution_hash = compute_constitution_hash(
+            book_id,
+            book,
+            self._book_venues(book),
+        )
         book.status = u8(BOOK_SEALED)
         book.sealed_at = current_datetime()
         BookSealed(book_id, venue_count=len(book.venue_ids)).emit()
@@ -486,6 +600,16 @@ class Venue(gl.Contract):
             )
 
         status = self._derive_status(verdicts)
+        venue_ids = [value for value in book.venue_ids]
+        constitution_hash = str(book.constitution_hash)
+        if constitution_hash == "":
+            raise gl.vm.UserError(f"{ERR_STATE}: sealed book has no constitution hash")
+        matter_hash = sha256_hex(matter)
+        verdict_hash = compute_verdict_hash(
+            constitution_hash,
+            venue_ids,
+            verdicts,
+        )
         route_id = self.next_route_id
         self.next_route_id = u256(int(self.next_route_id) + 1)
 
@@ -511,6 +635,20 @@ class Venue(gl.Contract):
 
         if status == ROUTE_SINGLE:
             receipt.single_venue_id = receipt.matched_venue_ids[0]
+
+        receipt.constitution_hash = constitution_hash
+        receipt.matter_hash = matter_hash
+        receipt.verdict_hash = verdict_hash
+        receipt.receipt_hash = compute_receipt_hash(
+            book_id,
+            constitution_hash,
+            matter_hash,
+            verdict_hash,
+            status,
+            receipt.single_venue_id,
+            receipt.matched_venue_ids,
+            receipt.ambiguous_venue_ids,
+        )
 
         book.route_count = u32(int(book.route_count) + 1)
 
@@ -540,6 +678,7 @@ class Venue(gl.Contract):
             "sealed_at": str(book.sealed_at),
             "route_count": int(book.route_count),
             "venue_ids": [int(value) for value in book.venue_ids],
+            "constitution_hash": str(book.constitution_hash),
         }
 
     @gl.public.view
@@ -572,6 +711,10 @@ class Venue(gl.Contract):
             "ambiguous_venue_ids": [
                 int(value) for value in receipt.ambiguous_venue_ids
             ],
+            "constitution_hash": str(receipt.constitution_hash),
+            "matter_hash": str(receipt.matter_hash),
+            "verdict_hash": str(receipt.verdict_hash),
+            "receipt_hash": str(receipt.receipt_hash),
         }
 
     @gl.public.view
@@ -599,6 +742,73 @@ class Venue(gl.Contract):
             )
         venue = self._require_venue(receipt.single_venue_id)
         return venue.resolver
+
+    @gl.public.view
+    def is_route_receipt(
+        self,
+        route_id: u256,
+        expected_constitution_hash: str,
+        expected_matter_hash: str,
+        expected_receipt_hash: str,
+    ) -> bool:
+        receipt = self._require_route(route_id)
+        book = self._require_book(receipt.book_id)
+        expected_constitution_hash = str(expected_constitution_hash).strip().lower()
+        expected_matter_hash = str(expected_matter_hash).strip().lower()
+        expected_receipt_hash = str(expected_receipt_hash).strip().lower()
+        recomputed = compute_receipt_hash(
+            receipt.book_id,
+            receipt.constitution_hash,
+            receipt.matter_hash,
+            receipt.verdict_hash,
+            receipt.status,
+            receipt.single_venue_id,
+            receipt.matched_venue_ids,
+            receipt.ambiguous_venue_ids,
+        )
+        return (
+            str(book.constitution_hash).lower() == expected_constitution_hash
+            and str(receipt.constitution_hash).lower() == expected_constitution_hash
+            and str(receipt.matter_hash).lower() == expected_matter_hash
+            and str(receipt.receipt_hash).lower() == expected_receipt_hash
+            and str(receipt.receipt_hash).lower() == recomputed
+        )
+
+    @gl.public.view
+    def single_resolver_for(
+        self,
+        route_id: u256,
+        expected_constitution_hash: str,
+        expected_matter_hash: str,
+    ) -> Address:
+        receipt = self._require_route(route_id)
+        book = self._require_book(receipt.book_id)
+        if (
+            str(book.constitution_hash).lower()
+            != str(expected_constitution_hash).strip().lower()
+            or str(receipt.constitution_hash).lower()
+            != str(expected_constitution_hash).strip().lower()
+            or str(receipt.matter_hash).lower()
+            != str(expected_matter_hash).strip().lower()
+        ):
+            raise gl.vm.UserError(f"{ERR_EXPECTED}: route provenance mismatch")
+        if int(receipt.status) != ROUTE_SINGLE:
+            raise gl.vm.UserError(
+                f"{ERR_STATE}: route does not have exactly one venue"
+            )
+        expected_receipt_hash = compute_receipt_hash(
+            receipt.book_id,
+            receipt.constitution_hash,
+            receipt.matter_hash,
+            receipt.verdict_hash,
+            receipt.status,
+            receipt.single_venue_id,
+            receipt.matched_venue_ids,
+            receipt.ambiguous_venue_ids,
+        )
+        if str(receipt.receipt_hash).lower() != expected_receipt_hash:
+            raise gl.vm.UserError(f"{ERR_STATE}: route receipt integrity mismatch")
+        return self._require_venue(receipt.single_venue_id).resolver
 
     @gl.public.view
     def runtime_chain_id(self) -> u256:

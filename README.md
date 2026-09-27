@@ -115,12 +115,23 @@ route_status(route_id)
 is_single_route(route_id)
 is_matched_venue(route_id, venue_id)
 single_resolver(route_id)
+is_route_receipt(route_id, expected_constitution_hash, expected_matter_hash, expected_receipt_hash)
+single_resolver_for(route_id, expected_constitution_hash, expected_matter_hash)
 runtime_chain_id()
 ```
 
 `single_resolver` reverts for MULTI_SCOPE, NO_VENUE and AMBIGUOUS receipts.
 
 That means a consumer cannot accidentally treat an unresolved jurisdiction question as a single authoritative venue.
+
+Every sealed book has a frozen `constitution_hash` binding its ordered venue
+definitions, including resolver addresses. Each route additionally stores a
+`matter_hash`, a full ordered `verdict_hash`, and a `receipt_hash` binding the
+deterministic route outcome. Resolver addresses are excluded from the semantic
+classifier payload but included in cryptographic provenance. Consumers should
+use `is_route_receipt` to pin a route to the expected book constitution and
+matter, and `single_resolver_for` when they need a resolver only for a verified
+`SINGLE` receipt.
 
 ## What VENUE does not claim
 
@@ -208,6 +219,6 @@ scripts/
 
 Source implementation, Direct Mode suite, CI, deployment guards, live integration scenario and reviewer documentation are included.
 
-Verified locally in Linux Direct Mode: **20/20 tests passed**. The repository-local **GenLayer CLI 0.39.1** and stable Studionet/61999 toolchain guard pass.
+Verified locally in Linux Direct Mode: **23/23 tests passed**. The repository-local **GenLayer CLI 0.39.1** and stable Studionet/61999 toolchain guard pass.
 
 The verified Studionet deployment is recorded in `REVIEW_EVIDENCE.md` and `DEPLOYMENT.md`. The live book demonstrates SINGLE, MULTI_SCOPE, NO_VENUE and AMBIGUOUS outcomes against the complete sealed three-venue set.

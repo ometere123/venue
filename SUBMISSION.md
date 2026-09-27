@@ -63,8 +63,17 @@ Downstream contracts can query:
 - `is_single_route(route_id)`
 - `is_matched_venue(route_id, venue_id)`
 - `single_resolver(route_id)`
+- `is_route_receipt(route_id, expected_constitution_hash, expected_matter_hash, expected_receipt_hash)`
+- `single_resolver_for(route_id, expected_constitution_hash, expected_matter_hash)`
 
 `single_resolver` fails unless the route is exactly `SINGLE`.
+
+The current source also provides immutable provenance hashes: `constitution_hash`
+binds the complete ordered book including resolvers, `matter_hash` binds the
+normalized submitted matter, `verdict_hash` binds the complete ordered verdict
+vector, and `receipt_hash` binds those hashes to the deterministic route result.
+The hash-aware consumer methods prevent a valid receipt for a different matter
+or constitution from being reused accidentally.
 
 ## Network target
 
@@ -76,7 +85,7 @@ Downstream contracts can query:
 
 ## Evidence status
 
-- Direct Mode: **20/20 passed in Linux**
+- Direct Mode: **23/23 passed in Linux**
 - Contract: `0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92`
 - Deployment: `0x8f39d1680a2bd49f62c584ee2ed3a7fb52ec97b9a27e7c6f6150a1390e04de6b`
 - Runtime chain readback: `61999`

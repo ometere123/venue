@@ -117,8 +117,22 @@ Downstream Intelligent Contracts can use `IVenue` and read:
 - `is_single_route(route_id)`
 - `is_matched_venue(route_id, venue_id)`
 - `single_resolver(route_id)`
+- `is_route_receipt(route_id, expected_constitution_hash, expected_matter_hash, expected_receipt_hash)`
+- `single_resolver_for(route_id, expected_constitution_hash, expected_matter_hash)`
 
 `single_resolver` fails unless the receipt is genuinely `SINGLE`.
+
+### Immutable route provenance
+
+Sealing computes `constitution_hash` over the book identity and creator, title,
+ordered venue IDs, names, scopes, exclusions and resolver addresses. Resolver
+addresses remain absent from the semantic prompt, but are cryptographically
+bound by the sealed constitution. A route stores `matter_hash`, a hash of the
+exact normalized matter, and `verdict_hash`, a hash of the ordered venue IDs
+and complete consensus verdict vector. `receipt_hash` binds those values to
+the deterministic route status and derived venue lists. Downstream consumers
+can verify the expected constitution and matter without manually reconstructing
+the full receipt.
 
 ## Network target
 

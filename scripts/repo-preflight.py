@@ -26,6 +26,13 @@ for required in (
     "ROUTE_MULTI_SCOPE",
     "class Venue(gl.Contract)",
     "route_matter",
+    "constitution_hash",
+    "matter_hash",
+    "verdict_hash",
+    "receipt_hash",
+    "is_route_receipt",
+    "single_resolver_for",
+    "hashlib.sha256",
 ):
     assert required in source, required
 
