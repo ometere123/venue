@@ -23,6 +23,8 @@ For each venue, GenLayer consensus returns one bounded verdict:
 
 Validators independently re-derive the full verdict vector with `run_nondet_unsafe`.
 
+The semantic classifier is intentionally **resolver-blind**: resolver addresses are stored on-chain but are excluded from the LLM payload. The classifier sees only venue IDs, names, scopes and exclusions, so it cannot favour a venue because of resolver identity.
+
 ## Deterministic outcome derivation
 
 The model never chooses a winning venue.
