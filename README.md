@@ -35,7 +35,7 @@ deterministic result
 MULTI_SCOPE
 ```
 
-The model never chooses which venue wins.
+The model never chooses which venue wins. It also never receives resolver addresses during semantic classification, so resolver identity cannot influence the MATCH/NO_MATCH/AMBIGUOUS vector.
 
 ## Outcomes
 
@@ -207,5 +207,7 @@ scripts/
 ## Current status
 
 Source implementation, Direct Mode suite, CI, deployment guards, live integration scenario and reviewer documentation are included.
+
+Verified in GitHub Actions: **20/20 Direct Mode tests passed**. The same run verified the repository-local **GenLayer CLI 0.39.1** and the stable Studionet/61999 toolchain guard.
 
 Live deployment evidence remains deliberately pending until a funded Studionet account actually executes and finalises the transactions.
