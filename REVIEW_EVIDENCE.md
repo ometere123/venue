@@ -5,7 +5,7 @@ Populate this file only with observed local-test or finalized Studionet evidence
 ## Source
 
 - Final commit SHA: `PENDING`
-- Direct Mode result: `PENDING`
+- Direct Mode result: **20/20 passed in GitHub Actions**
 
 ## Toolchain
 
