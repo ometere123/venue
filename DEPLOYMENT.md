@@ -111,7 +111,7 @@ Contract: `0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92`
 
 Deployment transaction: `0x8f39d1680a2bd49f62c584ee2ed3a7fb52ec97b9a27e7c6f6150a1390e04de6b`
 
-Deployment result: `ACCEPTED / MAJORITY_AGREE / SUCCESS`.
+Deployment result: `FINALIZED / ACCEPTED / MAJORITY_AGREE / SUCCESS`.
 `runtime_chain_id()` returned `61999`.
 
 Routing book `1` was created and sealed with venue IDs `1` (Software), `2`

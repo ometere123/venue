@@ -19,7 +19,7 @@ Populate this file only with observed local-test or finalized Studionet evidence
 
 - Contract address: `0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92`
 - Deployment transaction: `0x8f39d1680a2bd49f62c584ee2ed3a7fb52ec97b9a27e7c6f6150a1390e04de6b`
-- Deployment finality/result: `ACCEPTED / MAJORITY_AGREE / SUCCESS`
+- Deployment finality/result: `FINALIZED / ACCEPTED / MAJORITY_AGREE / SUCCESS`
 - `runtime_chain_id()`: `61999`
 - Explorer: https://explorer-studio.genlayer.com/address/0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92
 
