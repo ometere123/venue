@@ -37,7 +37,7 @@ Never add model-selected venue priority or caller-selected routing subsets.
 5. Run `npm run toolchain:check`.
 6. Create/activate a Python venv and install `requirements-test.txt`.
 7. Run `python scripts/repo-preflight.py`.
-8. Run `pytest tests/direct -v -s` and require the full suite green.
+8. Run `pytest tests/direct -v -s` and require the full suite green. Current verified baseline: **20 passed, 0 failed**.
 9. Set `studionet`, run `npx genlayer network info`, and verify 61999 plus `https://studio.genlayer.com/api`.
 10. Deploy `contracts/venue.py` using the guarded repository deployment path.
 11. Call `runtime_chain_id()` and require 61999.
