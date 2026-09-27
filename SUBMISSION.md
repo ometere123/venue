@@ -76,7 +76,7 @@ Downstream contracts can query:
 
 ## Evidence status
 
-- Direct Mode: `PENDING CI RESULT`
+- Direct Mode: **20/20 passed in GitHub Actions**
 - Contract address: `PENDING`
 - Deployment transaction: `PENDING`
 - Live SINGLE route: `PENDING`
