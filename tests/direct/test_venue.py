@@ -127,7 +127,7 @@ def test_single_scope_route(
     assert contract.is_single_route(route_id) is True
     assert contract.is_matched_venue(route_id, software) is True
     assert contract.is_matched_venue(route_id, privacy) is False
-    assert str(contract.single_resolver(route_id)) == str(direct_bob)
+    assert str(contract.single_resolver(route_id)).lower() == ("0x" + direct_bob.hex()).lower()
     assert direct_vm.run_validator() is True
 
 
