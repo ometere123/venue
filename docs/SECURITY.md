@@ -12,6 +12,10 @@ VENUE protects one narrow guarantee:
 
 The route method accepts only `book_id` and `matter`. It materialises the entire sealed venue list internally. There is no caller-supplied venue subset.
 
+### Resolver identity biases semantic routing
+
+Resolver addresses are not included in the semantic-classification payload. The model cannot prefer or reject a venue based on the identity of its resolver.
+
 ### Malicious leader fabricates the verdict vector
 
 Validators independently re-run the full classification and reject a leader vector they do not reproduce.
