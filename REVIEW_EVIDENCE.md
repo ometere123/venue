@@ -9,8 +9,11 @@ Only observed local-test and finalized Studionet evidence is recorded here.
 - Chain ID: **61999**
 - RPC: `https://studio.genlayer.com/api`
 - Direct Mode: **23/23 passed in Linux**
-- Contract source commit used for deployment: `8dd4c3bf5f325d3a64f5392ebf1790dd9bbe1d9b`
-- Deployed source: 28,078 bytes, SHA-256 `eb4032c777ebfe660c9cf28067294874061ce641ba29d908e2021c04a167b70b`
+- Source commit identified for deployment: `8dd4c3bf5f325d3a64f5392ebf1790dd9bbe1d9b`
+- Deployment-captured working-tree representation: 28,078 bytes, SHA-256 `eb4032c777ebfe660c9cf28067294874061ce641ba29d908e2021c04a167b70b`
+- Git blob at that commit: 27,498 bytes, SHA-256 `a7fc1a3cfc7c95dbecbcd91ba09ecb636016bcdb83cbd644ea5cba75cc7334e0`
+- Verified representation difference: both contain 828 LF bytes; the working-tree representation contains 580 CRLF sequences and the Git blob contains no CR bytes.
+- This evidence does not claim byte-for-byte Git-blob identity with the deployment capture. The contract implementation did not change after the deployment source commit.
 
 ## Current canonical deployment
 

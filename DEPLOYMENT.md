@@ -103,9 +103,20 @@ Never fabricate evidence.
 
 ## Current canonical Studionet evidence
 
-Source used for the current deployment: commit `8dd4c3bf5f325d3a64f5392ebf1790dd9bbe1d9b`.
-The deployed `contracts/venue.py` is 28,078 bytes with SHA-256
+Source commit identified for the current deployment: `8dd4c3bf5f325d3a64f5392ebf1790dd9bbe1d9b`.
+The deployment command passed `contracts/venue.py` directly from the working
+tree. The deployment capture records that submitted source representation as
+28,078 bytes with SHA-256
 `eb4032c777ebfe660c9cf28067294874061ce641ba29d908e2021c04a167b70b`.
+
+The canonical Git blob at that source commit is a different raw byte
+representation: 27,498 bytes with SHA-256
+`a7fc1a3cfc7c95dbecbcd91ba09ecb636016bcdb83cbd644ea5cba75cc7334e0`.
+The byte comparison found 828 LF bytes in both representations; the working
+tree representation contains 580 CRLF sequences while the Git blob contains no
+CR bytes. Therefore this repository does not claim byte-for-byte Git-blob
+parity with the deployment capture. The contract implementation did not change
+after the deployment source commit.
 
 Contract: `0xa189d4c85d75164c266435003d7501A7F6942109`
 

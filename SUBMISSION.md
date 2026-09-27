@@ -88,8 +88,10 @@ or constitution from being reused accidentally.
 - Direct Mode: **23/23 passed in Linux**
 - Current contract: `0xa189d4c85d75164c266435003d7501A7F6942109`
 - Current deployment: `0x54512cd85d7ffde8b5098da353f52684ec2b93002345baab4b25c4cfce49290a`
-- Current source commit: `8dd4c3bf5f325d3a64f5392ebf1790dd9bbe1d9b`
-- Current source SHA-256: `eb4032c777ebfe660c9cf28067294874061ce641ba29d908e2021c04a167b70b`
+- Current source commit identified for deployment: `8dd4c3bf5f325d3a64f5392ebf1790dd9bbe1d9b`
+- Deployment-captured working-tree source: 28,078 bytes, SHA-256 `eb4032c777ebfe660c9cf28067294874061ce641ba29d908e2021c04a167b70b`
+- Canonical Git blob at that commit: 27,498 bytes, SHA-256 `a7fc1a3cfc7c95dbecbcd91ba09ecb636016bcdb83cbd644ea5cba75cc7334e0`
+- The records preserve both observed representations and do not claim raw byte-for-byte parity.
 - Current live provenance route: `0x164de81c321825f94b85c707026b5bd785c0e48f26369de2ff930949e8d3dd13`
 - Current constitution hash: `dba6686bbcca1faf05b7619203bc5c69ef14a1c255c73b3f2cab0d0a68c42ddd`
 - Current receipt hash: `43938648c94205c3d73442c71ea029bfcf2c7cffa25fdc63041802a8865d5597`
