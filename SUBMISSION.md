@@ -76,11 +76,15 @@ Downstream contracts can query:
 
 ## Evidence status
 
-- Direct Mode: **20/20 passed in GitHub Actions**
-- Contract address: `PENDING`
-- Deployment transaction: `PENDING`
-- Live SINGLE route: `PENDING`
-- Live MULTI_SCOPE route: `PENDING`
-- Live NO_VENUE route: `PENDING`
+- Direct Mode: **20/20 passed in Linux**
+- Contract: `0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92`
+- Deployment: `0x8f39d1680a2bd49f62c584ee2ed3a7fb52ec97b9a27e7c6f6150a1390e04de6b`
+- Runtime chain readback: `61999`
+- Live SINGLE route: route `1`, `0x37cfabd7ebaf368419960fc975b8705fb84014ed9e85dd598fa5158896bddf3c`
+- Live MULTI_SCOPE route: route `2`, `0xec5ba811df578e900da975659bf50e88e9dce080e10c50ba2156d94a792a6092`
+- Live NO_VENUE route: route `3`, `0xb8b87a085f3c49e9cf0baa657b0da98e51c4bf3a2d0a9297c1e80a440dd5ecd7`
+- Live AMBIGUOUS route: route `4`, `0x6b5a43b3eed8253b519a0a8eb98468a55903750384bad397fbb92ea123333e41`
+
+See `REVIEW_EVIDENCE.md` for the complete transaction and readback table. All explorer links use `https://explorer-studio.genlayer.com`.
 
 No live evidence is claimed before it exists.

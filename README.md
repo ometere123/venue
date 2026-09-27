@@ -208,6 +208,6 @@ scripts/
 
 Source implementation, Direct Mode suite, CI, deployment guards, live integration scenario and reviewer documentation are included.
 
-Verified in GitHub Actions: **20/20 Direct Mode tests passed**. The same run verified the repository-local **GenLayer CLI 0.39.1** and the stable Studionet/61999 toolchain guard.
+Verified locally in Linux Direct Mode: **20/20 tests passed**. The repository-local **GenLayer CLI 0.39.1** and stable Studionet/61999 toolchain guard pass.
 
-Live deployment evidence remains deliberately pending until a funded Studionet account actually executes and finalises the transactions.
+The verified Studionet deployment is recorded in `REVIEW_EVIDENCE.md` and `DEPLOYMENT.md`. The live book demonstrates SINGLE, MULTI_SCOPE, NO_VENUE and AMBIGUOUS outcomes against the complete sealed three-venue set.
