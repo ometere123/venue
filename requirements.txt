@@ -1,0 +1,2 @@
+# VENUE has no host-side runtime dependency.
+# The Intelligent Contract pins its GenLayer runtime in contracts/venue.py.
