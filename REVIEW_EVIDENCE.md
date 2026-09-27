@@ -1,12 +1,6 @@
 # VENUE reviewer evidence
 
-Populate this file only with observed local-test or finalized Studionet evidence.
-
-## Source
-
-- Source commit used for deployment: `92efa0ed796f3a8de5373e23c0515959c8849ded`
-- Evidence commit: reported as the final Git SHA after push
-- Direct Mode result: **20/20 passed in Linux**
+Only observed local-test and finalized Studionet evidence is recorded here.
 
 ## Toolchain
 
@@ -14,72 +8,62 @@ Populate this file only with observed local-test or finalized Studionet evidence
 - Network: **Studionet**
 - Chain ID: **61999**
 - RPC: `https://studio.genlayer.com/api`
+- Direct Mode: **23/23 passed in Linux**
+- Contract source commit used for deployment: `8dd4c3bf5f325d3a64f5392ebf1790dd9bbe1d9b`
+- Deployed source: 28,078 bytes, SHA-256 `eb4032c777ebfe660c9cf28067294874061ce641ba29d908e2021c04a167b70b`
 
-## Deployment
+## Current canonical deployment
 
-- Contract address: `0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92`
-- Deployment transaction: `0x8f39d1680a2bd49f62c584ee2ed3a7fb52ec97b9a27e7c6f6150a1390e04de6b`
-- Deployment finality/result: `FINALIZED / ACCEPTED / MAJORITY_AGREE / SUCCESS`
+- Contract: `0xa189d4c85d75164c266435003d7501A7F6942109`
+- Deployment transaction: `0x54512cd85d7ffde8b5098da353f52684ec2b93002345baab4b25c4cfce49290a`
+- Final result: `FINALIZED / ACCEPTED / MAJORITY_AGREE / SUCCESS`
 - `runtime_chain_id()`: `61999`
-- Explorer: https://explorer-studio.genlayer.com/address/0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92
+- Explorer: https://explorer-studio.genlayer.com/address/0xa189d4c85d75164c266435003d7501A7F6942109
 
-## Routing book
+## Current provenance proof
 
 - Book ID: `1`
-- Book creation transaction: `0xf1c763c34d7b8c7f995fc6edd75ca111a6e9f2cdb0fd91c813bb7055bbc10474`
-- Software venue ID: `1`; transaction `0xa19ff8333a2141d96034b54c733c0b5f220021d1c3c962231f6c9f79902fd596`
-- Privacy venue ID: `2`; transaction `0x06d4461f41c499fa1d4fd5cdb10e82380cbf34b9e2078412248399a33843c575`
-- Logistics venue ID: `3`; transaction `0x0a3ab6bbb305a80acefa9161f9c0dff2c22d12a75450013c74233ca56577aab0`
-- Seal transaction: `0x19c1481c09b9f4b92435b778246cdc3f61c4ae8ddb204f5761613faafcdc2cfd`
+- Book creation: `0xb01e5d37e437df335155a7d8dca2ec7dd9415ea15947ce3ffdcd165f53d30499`
+- Venue 1 Software: `0x799956154668bc5edddc92f67dd39a28f95190869626a99c4bcfdc77600c412a`
+- Venue 2 Privacy: `0x6b69e304c460c178883586f2bd3ef892aa94c23e4363627debde27f8516f6aed`
+- Venue 3 Logistics: `0x0c21257493c9b16beb0487f30d2314c676527a52707acd745f9d2cfc79e7649a`
+- Seal: `0x1c6401206dccfea42dd2cdaa5dcda2ad49f8ac61828576838785a9ba100bcf25`
 - Sealed readback: `status=1`, `venue_ids=[1,2,3]`
+- Constitution hash: `dba6686bbcca1faf05b7619203bc5c69ef14a1c255c73b3f2cab0d0a68c42ddd`
 
-## Scenario A — SINGLE
+### SINGLE route
 
-- Transaction: `0x37cfabd7ebaf368419960fc975b8705fb84014ed9e85dd598fa5158896bddf3c`
+- Transaction: `0x164de81c321825f94b85c707026b5bd785c0e48f26369de2ff930949e8d3dd13`
 - Route ID: `1`
-- Status: `SINGLE`
-- Matched venues: `[1]`; ambiguous venues: `[]`; single venue: `1`
-- Evaluated count: `3`; no-match count: `2`
-- Resolver proof: `is_single_route=true`, `single_resolver=0xb29Ead15B1E8A2420faE84de974088f67a15ccC2`
+- Final result: `FINALIZED / ACCEPTED / MAJORITY_AGREE / SUCCESS`
+- Readback: `status=SINGLE`, `matched_venue_ids=[1]`, `ambiguous_venue_ids=[]`, `evaluated_count=3`, `no_match_count=2`, `single_venue_id=1`
+- Matter hash: `522aa04c996f133faafee20c7a5a0c8f3603fb6e865bde43f21d71c2b41ce7cb`
+- Verdict hash: `0a4e99925310523c1edabf9c76bcb9869495dfdabf68d92fa9e9304565ff025a`
+- Receipt hash: `43938648c94205c3d73442c71ea029bfcf2c7cffa25fdc63041802a8865d5597`
+- `is_route_receipt(1, constitution_hash, matter_hash, receipt_hash)`: `true`
+- `single_resolver_for(1, constitution_hash, matter_hash)`: `0xb29ead15b1e8a2420fae84de974088f67a15ccc2`
+- Explorer: https://explorer-studio.genlayer.com/tx/0x164de81c321825f94b85c707026b5bd785c0e48f26369de2ff930949e8d3dd13
 
-## Scenario B — MULTI_SCOPE
+The receipt demonstrates that the complete ordered venue set was evaluated and
+that the result is cryptographically bound to the sealed constitution, exact
+matter, ordered verdict vector and deterministic route outcome. Resolver
+addresses are included in the constitution hash but excluded from the semantic
+classification payload.
 
-- Transaction: `0xec5ba811df578e900da975659bf50e88e9dce080e10c50ba2156d94a792a6092`
-- Route ID: `2`
-- Status: `MULTI_SCOPE`
-- Matched venues: `[1,2]`; ambiguous venues: `[]`; evaluated count: `3`
-- `is_matched_venue(2,1)=true`, `is_matched_venue(2,2)=true`; `single_resolver` refused
+## Superseded deployment
 
-## Scenario C — NO_VENUE
-
-- Transaction: `0xb8b87a085f3c49e9cf0baa657b0da98e51c4bf3a2d0a9297c1e80a440dd5ecd7`
-- Route ID: `3`
-- Status: `NO_VENUE`
-- Matched venues: `[]`; ambiguous venues: `[]`; no-match count: `3`; evaluated count: `3`
-- `single_resolver` refused
-
-## Scenario D — AMBIGUOUS
-
-- Transaction/evidence: `0x6b5a43b3eed8253b519a0a8eb98468a55903750384bad397fbb92ea123333e41`
-- Route ID: `4`
-- Status: `AMBIGUOUS`
-- Ambiguous venues: `[1,2,3]`; matched venues: `[]`; evaluated count: `3`
-- Finalized result: `ACCEPTED / MAJORITY_AGREE / SUCCESS`
-
-## Explorer links
-
-- Contract: https://explorer-studio.genlayer.com/address/0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92
-- Deployment: https://explorer-studio.genlayer.com/tx/0x8f39d1680a2bd49f62c584ee2ed3a7fb52ec97b9a27e7c6f6150a1390e04de6b
-- SINGLE: https://explorer-studio.genlayer.com/tx/0x37cfabd7ebaf368419960fc975b8705fb84014ed9e85dd598fa5158896bddf3c
-- MULTI_SCOPE: https://explorer-studio.genlayer.com/tx/0xec5ba811df578e900da975659bf50e88e9dce080e10c50ba2156d94a792a6092
-- NO_VENUE: https://explorer-studio.genlayer.com/tx/0xb8b87a085f3c49e9cf0baa657b0da98e51c4bf3a2d0a9297c1e80a440dd5ecd7
-- AMBIGUOUS: https://explorer-studio.genlayer.com/tx/0x6b5a43b3eed8253b519a0a8eb98468a55903750384bad397fbb92ea123333e41
+The earlier contract `0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92` and its
+associated 61999 evidence remain historical migration evidence. The current
+canonical contract is the address listed above.
 
 ## Tooling note
 
-`genvm-linter 0.11.0` static lint passed its three checks. Its SDK validation
-attempt on this Windows host failed while reading a compressed runner download;
-Linux Direct Mode remained the authoritative local behavioural check and passed
-20/20. This is a tooling/download issue, not a contract execution failure.
+Static lint passed. The Windows combined GenVM SDK check encountered a corrupted
+compressed runner cache; Linux Direct Mode remains the authoritative behavioural
+verification and passed 23/23. This is a local tooling/download limitation, not
+a live contract execution failure.
 
-Do not fabricate transaction hashes, addresses, finality or consensus outputs.
+The malformed diagnostic call that supplied a pseudo `str` token is not counted
+as lifecycle evidence; the clean live calls above used plain CLI arguments.
+
+No private keys, wallet exports or secrets are included.

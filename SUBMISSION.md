@@ -86,14 +86,22 @@ or constitution from being reused accidentally.
 ## Evidence status
 
 - Direct Mode: **23/23 passed in Linux**
-- Contract: `0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92`
-- Deployment: `0x8f39d1680a2bd49f62c584ee2ed3a7fb52ec97b9a27e7c6f6150a1390e04de6b`
+- Current contract: `0xa189d4c85d75164c266435003d7501A7F6942109`
+- Current deployment: `0x54512cd85d7ffde8b5098da353f52684ec2b93002345baab4b25c4cfce49290a`
+- Current source commit: `8dd4c3bf5f325d3a64f5392ebf1790dd9bbe1d9b`
+- Current source SHA-256: `eb4032c777ebfe660c9cf28067294874061ce641ba29d908e2021c04a167b70b`
+- Current live provenance route: `0x164de81c321825f94b85c707026b5bd785c0e48f26369de2ff930949e8d3dd13`
+- Current constitution hash: `dba6686bbcca1faf05b7619203bc5c69ef14a1c255c73b3f2cab0d0a68c42ddd`
+- Current receipt hash: `43938648c94205c3d73442c71ea029bfcf2c7cffa25fdc63041802a8865d5597`
+- Superseded contract: `0x8bf3F317ecCF760F7380d2427e8a22Ba06aeAc92`
 - Runtime chain readback: `61999`
-- Live SINGLE route: route `1`, `0x37cfabd7ebaf368419960fc975b8705fb84014ed9e85dd598fa5158896bddf3c`
-- Live MULTI_SCOPE route: route `2`, `0xec5ba811df578e900da975659bf50e88e9dce080e10c50ba2156d94a792a6092`
-- Live NO_VENUE route: route `3`, `0xb8b87a085f3c49e9cf0baa657b0da98e51c4bf3a2d0a9297c1e80a440dd5ecd7`
-- Live AMBIGUOUS route: route `4`, `0x6b5a43b3eed8253b519a0a8eb98468a55903750384bad397fbb92ea123333e41`
+- Live provenance SINGLE route: route `1`, `0x164de81c321825f94b85c707026b5bd785c0e48f26369de2ff930949e8d3dd13`
+- Live constitution hash: `dba6686bbcca1faf05b7619203bc5c69ef14a1c255c73b3f2cab0d0a68c42ddd`
+- Live receipt verification: `is_route_receipt == true`; `single_resolver_for` returned the configured resolver
 
 See `REVIEW_EVIDENCE.md` for the complete transaction and readback table. All explorer links use `https://explorer-studio.genlayer.com`.
+
+The earlier multi-status scenario receipts belong to the superseded deployment and
+are not presented as evidence for the current provenance deployment.
 
 No live evidence is claimed before it exists.
